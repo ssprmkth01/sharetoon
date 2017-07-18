@@ -3,25 +3,68 @@ package sharetoon.bean.creation.test;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import sharetoon.users.dto.UserDTO;
 import sharetoon.users.service.UserManageService;
 
 public class UserManageServiceTest 
 {
+	private final String CONFIG_LOCATION= "config/spring/applicationContext.xml";
+	
+	@Autowired
+	private PlatformTransactionManager txMgr;
+	
 	@Test
-	public void addUser() 
+	public void createUser() throws Exception
 	{
-		ApplicationContext appCtxt= new ClassPathXmlApplicationContext("config/spring/applicationContext.xml");
+		ApplicationContext appCtxt= new ClassPathXmlApplicationContext(CONFIG_LOCATION);
+		txMgr= appCtxt.getBean("txMgr", DataSourceTransactionManager.class);
+		DefaultTransactionDefinition txDef= new DefaultTransactionDefinition();
+		TransactionStatus txStat= txMgr.getTransaction(txDef);
 		UserManageService userMngSvc= appCtxt.getBean("userManageService", UserManageService.class);
 		
 		if(userMngSvc == null) {
 			fail("bean creation fail");
 		}
 		
-		userMngSvc.createUser(getSimpleUser());
+		try {
+			userMngSvc.createUser(getSimpleUser());
+			
+		} catch(Exception e) {
+			fail("create user get exception");
+		} finally {
+			txMgr.rollback(txStat);
+		}
+	}
+	
+	@Test(expected = Exception.class)
+	public void createUserFail() throws Exception
+	{
+		ApplicationContext appCtxt= new ClassPathXmlApplicationContext(CONFIG_LOCATION);
+		txMgr= appCtxt.getBean("txMgr", DataSourceTransactionManager.class);
+		DefaultTransactionDefinition txDef= new DefaultTransactionDefinition();
+		TransactionStatus txStat= txMgr.getTransaction(txDef);
+		UserManageService userMngSvc= appCtxt.getBean("userManageService", UserManageService.class);
+		
+		if(userMngSvc == null) {
+			fail("bean creation fail");
+		}
+		
+		try {
+			UserDTO user= new UserDTO();
+			userMngSvc.createUser(user);
+		} finally {
+			txMgr.rollback(txStat);
+		}
+		
+		fail("No Exception");
 	}
 	
 	private UserDTO getSimpleUser()
@@ -35,5 +78,4 @@ public class UserManageServiceTest
 		
 		return user;
 	}
-
 }
