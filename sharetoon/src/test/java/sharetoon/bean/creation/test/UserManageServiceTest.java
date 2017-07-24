@@ -36,7 +36,6 @@ public class UserManageServiceTest
 		
 		try {
 			userMngSvc.createUser(getSimpleUser());
-			
 		} catch(Exception e) {
 			fail("create user get exception");
 		} finally {

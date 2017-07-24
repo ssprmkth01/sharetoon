@@ -12,15 +12,36 @@
     http://www.springframework.org/schema/tx 
     http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
+	<!-- @Autowired를 통한 Bean 자동 set -->
 	<context:annotation-config/>
+	
+	<!-- aspectj를 통한 Service 트랜잭션 AOP 처리 -->
 	<tx:annotation-driven transaction-manager="txMgr" mode="aspectj"/>
+	
+	<!-- advisor 등록을 위한 Bean 후처리기 -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+	
+	<!-- advisor Bean : type parameter check -->
 
+	<bean id="validParamAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="validParamAdvice" />
+		<property name="pointcut" ref="validParamPointcut" />
+	</bean>
+	
+	<bean id="validParamAdvice" class="sharetoon.common.aop.ValidateParameterAdvice" />
+	<bean id="validParamPointcut" class="sharetoon.common.aop.ValidateParameterPointcut">
+		<property name="mappedClassName" value="*Service" />
+		<property name="mappedName" value="*" />
+	</bean>
+ 
+	<!-- JDBC Datasource 설정정보 -->
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
 			<value>classpath:config/datasource/datasource.properties</value>
 		</property>
 	</bean>
 	
+	<!-- Datasource Bean 등록 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${datasource.driver}"/>
 		<property name="url" value="${datasource.url}"/>
@@ -28,6 +49,7 @@
 		<property name="password" value="${datasource.userPassword}"/>
 	</bean>
 	
+	<!-- ibatis 관련 Bean 등록 -->
 	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<property name="configLocation"   value="classpath:config/datasource/sqlMapConfig.xml"/>
 		<property name="dataSource" ref="dataSource"/>
@@ -41,10 +63,13 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 
+	<!-- Business logic Service Bean 등록 -->
 	<bean id="userManageService" 
 		class="sharetoon.users.service.UserManageService">
 	</bean>
 	
+	
+	<!-- Data access dao Bean 등록 -->
 	<bean id="userDao" 
 		class="sharetoon.users.dao.UserDao">
 	</bean>
