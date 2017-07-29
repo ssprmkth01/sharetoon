@@ -15,6 +15,7 @@ public class ValidateParameterAdvice implements MethodInterceptor
 			/**
 			 * TODO : parameter check
 			 */
+			System.out.println(param);
 		}
 		
 		mthdInvoc.proceed();

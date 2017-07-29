@@ -16,24 +16,8 @@
 	<context:annotation-config/>
 	
 	<!-- aspectj를 통한 Service 트랜잭션 AOP 처리 -->
-	<tx:annotation-driven transaction-manager="txMgr" mode="aspectj"/>
+	<tx:annotation-driven transaction-manager="txMgr"/>
 	
-	<!-- advisor 등록을 위한 Bean 후처리기 -->
-	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
-	
-	<!-- advisor Bean : type parameter check -->
-
-	<bean id="validParamAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
-		<property name="advice" ref="validParamAdvice" />
-		<property name="pointcut" ref="validParamPointcut" />
-	</bean>
-	
-	<bean id="validParamAdvice" class="sharetoon.common.aop.ValidateParameterAdvice" />
-	<bean id="validParamPointcut" class="sharetoon.common.aop.ValidateParameterPointcut">
-		<property name="mappedClassName" value="*Service" />
-		<property name="mappedName" value="*" />
-	</bean>
- 
 	<!-- JDBC Datasource 설정정보 -->
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
@@ -67,7 +51,6 @@
 	<bean id="userManageService" 
 		class="sharetoon.users.service.UserManageService">
 	</bean>
-	
 	
 	<!-- Data access dao Bean 등록 -->
 	<bean id="userDao" 
