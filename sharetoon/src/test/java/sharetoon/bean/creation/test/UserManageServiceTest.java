@@ -21,6 +21,12 @@ public class UserManageServiceTest
 	@Autowired
 	private PlatformTransactionManager txMgr;
 	
+	@Test
+	public void controllerIncTest()
+	{
+		
+	}
+	
 //	@Test
 //	public void transactionTest() throws Exception
 //	{
