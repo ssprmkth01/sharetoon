@@ -1,31 +1,71 @@
-package sharetoon.bean.creation.test;
+package sharetoon.service.test;
 
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockServletConfig;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.web.servlet.ModelAndView;
 
+import junit.framework.Assert;
+import sharetoon.test.helper.ConfigurableDispatcherServlet;
 import sharetoon.users.dto.UserDTO;
 import sharetoon.users.service.UserManageService;
 
 public class UserManageServiceTest
 {
 	private final String CONFIG_LOCATION= "config/spring/applicationContext.xml";
+//	private String[] locations=
+//		{
+//			"C:\\git\\sharetoon\\sharetoon\\src\\main\\resources\\config\\spring\\applicationContext.xml",
+//			"C:\\git\\sharetoon\\sharetoon\\src\\main\\resources\\config\\spring\\servletContext.xml"
+//		};
+	private String[] locations=
+		{
+			"config/spring/applicationContext.xml",
+			"config/spring/servletContext.xml"
+		};
 	
 	@Autowired
 	private PlatformTransactionManager txMgr;
 	
-	@Test
-	public void controllerIncTest()
-	{
-		
-	}
+//	/**
+//	 * 동작 안함;;;;;;;
+//	 * @throws ServletException
+//	 * @throws IOException
+//	 */
+//	@Test
+//	public void controllerIncTest() throws ServletException, IOException
+//	{
+//		ConfigurableDispatcherServlet servlet= new ConfigurableDispatcherServlet(locations);
+//		servlet.init(new MockServletConfig(new MockServletContext("spring")));
+//		
+//		MockHttpServletRequest req= new MockHttpServletRequest("POST", "/JoinMember.do");
+//		req.addParameter("id", "ssprmkth01");
+//		req.addParameter("password", "ssprmkth01");
+//		req.addParameter("email", "ssprmkth01@gmail.com");
+//		req.addParameter("point", "100");
+//		
+//		MockHttpServletResponse res= new MockHttpServletResponse();
+//		
+//		servlet.service(req, res);
+//		
+//		ModelAndView mav= servlet.getModelAndView();
+//		Assert.assertEquals(mav.getViewName(), "LoginForm");
+//	}
 	
 //	@Test
 //	public void transactionTest() throws Exception
